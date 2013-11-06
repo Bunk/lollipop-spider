@@ -15,45 +15,33 @@ namespace Lollipop.Spider.Workers
         public DateTime GameDate { get; set; }
     }
 
-    /// <summary>
-    /// Given a list of summoner ids, this class is responsible for following the trail
-    /// and returning a new list of related summoners.
-    /// </summary>
-    public class ActiveChampionCrawler
+    public class ChampionCrawler
     {
-        private readonly IStatsService _statsService;
-        private Queue<long> _summonerIds;
+        private readonly IStatsService _service;
 
-        public ActiveChampionCrawler(IStatsService statsService)
+        public ChampionCrawler(IStatsService service)
         {
-            if (statsService == null) throw new ArgumentNullException("statsService");
+            if (service == null) throw new ArgumentNullException("service");
 
-            _statsService = statsService;
+            _service = service;
         }
 
-        public async Task<List<SummonerGame>> Crawl(List<long> summonerIds)
+        public async Task<List<SummonerGame>> Crawl(long id)
         {
-            var crawled = new List<SummonerGame>();
+            // todo: Update summoner data
 
-            _summonerIds = new Queue<long>();
+            var recentGames = await _service.GetRecentGames((int) id);
+            
+            // todo: Update Games tables
 
-            while (_summonerIds.Count > 0)
-            {
-                var current = _summonerIds.Dequeue();
-
-                var recentGames = await _statsService.GetRecentGames((int) current);
-
-                crawled.AddRange(from game in recentGames.gameStatistics
-                                 from player in game.fellowPlayers
-                                 select new SummonerGame
-                                 {
-                                     Id = player.summonerId,
-                                     GameId = game.gameId,
-                                     GameDate = game.createDate
-                                 });
-            }
-
-            return crawled;
+            return (from game in recentGames.gameStatistics
+                    from player in game.fellowPlayers
+                    select new SummonerGame
+                    {
+                        Id = player.summonerId,
+                        GameId = game.gameId,
+                        GameDate = game.createDate
+                    }).ToList();
         }
     }
 }

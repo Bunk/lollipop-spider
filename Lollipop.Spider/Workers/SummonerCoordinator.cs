@@ -4,73 +4,50 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using System.Transactions;
 using Lollipop.Services;
 
 namespace Lollipop.Spider.Workers
 {
-    public class SummonerCoordinator
+    public class SummonerIdPool
     {
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-        private readonly Func<ActiveChampionCrawler> _champCrawlerFactory;
+        
+    }
 
-        public SummonerCoordinator(Func<ActiveChampionCrawler> champCrawlerFactory)
+    public class SummonerProducer
+    {
+        
+    }
+
+    public class SummonerConsumer
+    {
+        private readonly Func<ChampionCrawler> _factory;
+
+        public SummonerConsumer(Func<ChampionCrawler> factory)
         {
-            _champCrawlerFactory = champCrawlerFactory;
+            _factory = factory;
         }
 
-        public async Task Execute()
+        public void Execute(CancellationToken token)
         {
-            var nextIds = PullNextBlock();
-            while (nextIds.Count > 0)
+            var consumers = new ActionBlock<long>(id => Process(id), new ExecutionDataflowBlockOptions
             {
-                await Crawl(nextIds);
-                nextIds = PullNextBlock();
-            }
-        }
+                CancellationToken = token,
+                MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded
+            });
 
-        private List<long> PullNextBlock()
-        {
-            // we do this within a transaction to ensure that we're consistent
-            using (new TransactionScope())
+            // Retrieve the top page of summoner ids to process
+            var ids = new List<long>();
+            foreach (var id in ids)
             {
-                // get the next block of ids that meet the conditions
-                var ids = new List<long>();
-
-                // batch update the list with the current date time
-
-                // save these records so we don't pull them the next time
-
-                // return the next block
-                return ids;
-            }
-        }
-
-        private async Task Crawl(List<long> idBlock)
-        {
-            await _semaphore.WaitAsync();
-            try
-            {
-                var found = await _champCrawlerFactory().Crawl(idBlock);
-                Process(found);
-            }
-            finally
-            {
-                _semaphore.Release();
+                consumers.Post(id);
             }
         }
 
-        private void Process(IEnumerable<SummonerGame> summonerGames)
+        private async Task Process(long id)
         {
-            foreach (var game in summonerGames)
-            {
-                using (new TransactionScope())
-                {
-                    // Upsert the summoner queue id blocks
-                    // Insert new data if the summoner id doesn't exist
-                    // Update latest activity date with the date if it's later
-                }
-            }
+            await _factory().Crawl(id);
         }
     }
 }
