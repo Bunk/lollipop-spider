@@ -2,7 +2,7 @@
 using System.Threading;
 using Lollipop.Session;
 using Lollipop.Spider.Modules;
-using Lollipop.Spider.Workers;
+using Lollipop.Spider.Workflow;
 using Ninject;
 
 namespace Lollipop.Spider

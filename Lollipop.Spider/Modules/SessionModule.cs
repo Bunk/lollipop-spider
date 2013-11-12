@@ -1,6 +1,6 @@
 ﻿using Lollipop.Services;
 using Lollipop.Session;
-using Lollipop.Spider.Workers;
+using Lollipop.Spider.Workflow;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Modules;

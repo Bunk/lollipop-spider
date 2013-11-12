@@ -5,12 +5,11 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using com.riotgames.platform.statistics;
 using Lollipop.Services;
 using Lollipop.Spider.Data.Domain;
 using LoveSeat;
 
-namespace Lollipop.Spider.Workers
+namespace Lollipop.Spider.Workflow
 {
     public class SummonerProducer
     {
