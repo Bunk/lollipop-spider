@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security;
+using LoveSeat.Interfaces;
 
 namespace Lollipop.Spider.Data.Domain
 {
@@ -26,9 +27,13 @@ namespace Lollipop.Spider.Data.Domain
         public long SummonerId { get; set; }
     }
 
-    public class Summoner
+    public class Summoner : IBaseObject
     {
-        public long Id { get; set; }
+        public string Id { get; set; }
+
+        public string Rev { get; set; }
+
+        public string Type { get; private set; }
 
         public long AccountId { get; set; }
 

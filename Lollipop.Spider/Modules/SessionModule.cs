@@ -22,7 +22,12 @@ namespace Lollipop.Spider.Modules
             Bind<IGameService>().To<GameService>().InTransientScope();
             Bind<ISummonerService>().To<SummonerService>().InTransientScope();
 
-            Bind<SummonerProducer>().ToSelf().InSingletonScope();
+            Bind<IProduceSummoners>().To<SummonerProducer>().InTransientScope();
+            Bind<ILookupSummoners>().To<SummonerLookup>().InTransientScope();
+            Bind<ICrawlSummoners>().To<SummonerCrawler>().InTransientScope();
+            Bind<IStoreSummoners>().To<SummonerProducer>().InTransientScope();
+
+            Bind<SummonerWorkflow>().ToSelf().InTransientScope();
         }
 
         private static ILeagueAccount BuildAccount(IContext arg)

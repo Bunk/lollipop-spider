@@ -96,8 +96,17 @@
     <Compile Include="Modules\SessionModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reactive\IProduceSummoners.cs" />
-    <Compile Include="Workflow\SummonerCoordinator.cs" />
+    <Compile Include="ICrawlSummoners.cs" />
+    <Compile Include="ILookupSummoners.cs" />
+    <Compile Include="Reactive\IPollSummoners.cs" />
+    <Compile Include="IProduceSummoners.cs" />
+    <Compile Include="IStoreSummoners.cs" />
+    <Compile Include="SummonerCrawler.cs" />
+    <Compile Include="SummonerLookup.cs" />
+    <Compile Include="Reactive\SummonerObserver.cs" />
+    <Compile Include="Reactive\SummonerPollingAgent.cs" />
+    <Compile Include="SummonerProducer.cs" />
+    <Compile Include="Workflow\SummonerWorkflow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
